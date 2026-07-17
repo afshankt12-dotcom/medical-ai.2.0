@@ -1,12 +1,26 @@
 import torch
 
+from huggingface_hub import hf_hub_download
+
 from src.retrieval import Retriever
 from src.tokenizer import MedicalTokenizer
 from src.transformer_model import MedicalTransformer
 
 
-MODEL_PATH = "models/medical_transformer.pth"
-VOCAB_PATH = "models/vocab.json"
+# Hugging Face Model Repository
+HF_REPO = "shanufewf/medical-transformer-model"
+
+
+# Download model files automatically
+MODEL_PATH = hf_hub_download(
+    repo_id=HF_REPO,
+    filename="medical_transformer.pth"
+)
+
+VOCAB_PATH = hf_hub_download(
+    repo_id=HF_REPO,
+    filename="vocab.json"
+)
 
 
 class MedicalChatbot:
@@ -19,14 +33,26 @@ class MedicalChatbot:
             "cuda" if torch.cuda.is_available() else "cpu"
         )
 
-        # Load tokenizer
-        self.tokenizer = MedicalTokenizer()
-        self.tokenizer.load_vocab(VOCAB_PATH)
 
-        # Load transformer
+        # -----------------------------
+        # Load Tokenizer
+        # -----------------------------
+
+        self.tokenizer = MedicalTokenizer()
+
+        self.tokenizer.load_vocab(
+            VOCAB_PATH
+        )
+
+
+        # -----------------------------
+        # Load Transformer Model
+        # -----------------------------
+
         self.model = MedicalTransformer(
             vocab_size=self.tokenizer.vocab_size()
         )
+
 
         self.model.load_state_dict(
             torch.load(
@@ -35,11 +61,20 @@ class MedicalChatbot:
             )
         )
 
-        self.model.to(self.device)
+
+        self.model.to(
+            self.device
+        )
+
         self.model.eval()
 
-        # Retrieval system
+
+        # -----------------------------
+        # Retrieval System
+        # -----------------------------
+
         self.retriever = Retriever()
+
 
         print("Medical Chatbot Ready!")
 
@@ -50,10 +85,10 @@ class MedicalChatbot:
 
     def ask(self, question):
 
-        # Search medical database
         answer, score = self.retriever.search(
             question
         )
+
 
         return {
 
@@ -61,6 +96,9 @@ class MedicalChatbot:
 
             "answer": answer,
 
-            "confidence": round(score, 3)
+            "confidence": round(
+                score,
+                3
+            )
 
         }

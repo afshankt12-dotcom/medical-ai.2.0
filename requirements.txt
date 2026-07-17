@@ -8,3 +8,4 @@ scikit-learn
 nltk
 langdetect
 deep-translator
+huggingface_hub
