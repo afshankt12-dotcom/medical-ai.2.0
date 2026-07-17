@@ -8,12 +8,3 @@ scikit-learn
 nltk
 langdetect
 deep-translator
-torch
-transformers
-sentence-transformers
-pandas
-numpy
-scikit-learn
-nltk
-langdetect
-deep-translator
