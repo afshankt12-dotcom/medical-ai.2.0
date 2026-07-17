@@ -8,7 +8,6 @@ scikit-learn
 nltk
 langdetect
 deep-translator
-scipystreamlit
 torch
 transformers
 sentence-transformers
